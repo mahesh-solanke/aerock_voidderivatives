@@ -1,0 +1,18 @@
+<center>
+    <select name='facility' id ='facility' disabled="disabled" style="width:150px;">
+      <option value='' disabled="disabled" selected="selected">Choose Facility</option>
+     {% for a in airports %}
+      {% if a.icao_code == air %}
+        {% for af in airfac %}
+          {% if af.air_id == a.id %}
+           {% for fac in facilities %}
+             {% if fac.id == af.fac_id and af.status is True %}
+      <option value="{{fac.name}}">{{fac.name}}</option> 
+       {% endif %}
+           {% endfor %}
+          {% endif %}
+        {% endfor %}
+       {% endif %}
+      {% endfor %}
+    </select>
+</center>
