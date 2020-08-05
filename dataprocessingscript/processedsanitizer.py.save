@@ -113,7 +113,7 @@ df_calcexcepre = pd.DataFrame(columns=[])
 df_calcexcepor = df_temp[df_temp['state']=='ORANGE']
 df_calcexcepre = df_temp[df_temp['state']=='RED']
 df_calcexcepor=df_calcexcepor.append(df_calcexcepre, ignore_index=True)
-df_calcexcepor=df_calcexcepor.rename(columns={'datetime': 'event_time', 'no_of_containers' : 'deviceid'})
+df_calcexcepor=df_calcexcepor.rename(columns={'datetime':event_time, 'no_of_containers' : 'deviceid'})
 df_calcexcepor['facility']='sanitizer'
 df_calcexcepor['threshold']='100'
 del df_calcexcepor['count_dispenses'],df_calcexcepor['date']

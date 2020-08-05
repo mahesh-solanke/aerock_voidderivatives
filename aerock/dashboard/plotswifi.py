@@ -59,6 +59,6 @@ def wifi_hour(date, airport_code):
     fig.update_yaxes(title_text="Total used minutes", row=4, col=1)
     fig.update_xaxes(title_text="Hour", row=5, col=1)
     fig.update_yaxes(title_text="total unique users", row=5, col=1)
-    plot_div1 = fig.update_layout(height=700, width=1270, title_text=airport_code+" Data")
+    plot_div1 = fig.update_layout(height=900, width=1270, title_text=airport_code+" Data")
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div

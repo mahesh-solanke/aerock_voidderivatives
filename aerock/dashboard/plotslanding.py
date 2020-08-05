@@ -11,31 +11,29 @@ client = MongoClient('mongodb+srv://sih2020:sih2020@sih2020.l990z.mongodb.net/<d
 db_name = 'sihfinal'
 db = client[db_name]
 
-
-def top3(date,airport_code):
-    boarding_top3= db.api_boardtop3utilization
-    trolley_top3 = db.api_trolleytop3utilization
-    wifi_top3 = db.api_wifitop3utilization
-    feedback_top3=db.api_fbtop3utilization
-    parking_top3=db.api_parkingtop3utilization
-    conveyor_top3=db.api_cbtop3utilization
-    sanitizer_top3=db.api_sntop3utilization
-    kiosk_top3=db.api_kiosktop3utilization
-    mongodocs_boarding_top3 = list(boarding_top3.find())
-    mongodocs_trolley_top3 = list(trolley_top3.find())
-    mongodocs_wifi_top3 = list(wifi_top3.find())
-    mongodocs_feedback_top3= list(feedback_top3.find())
-    mongodocs_parking_top3= list(parking_top3.find())
-    mongodocs_conveyor_top3= list(conveyor_top3.find())
-    mongodocs_sanitizer_top3= list(sanitizer_top3.find())
-    mongodocs_kiosk_top3= list(kiosk_top3.find())
+def top3(date, airport_code):
+    col1 = db["api_boardtop3utilization"]
+    col2 = db["api_trolleytop3utilization"]
+    col3 = db["api_wifihour"]
+    col5 = db["api_parkingtop3utilization"]
+    col6 = db["api_cbtop3utilization"]
+    col7 = db["api_sntop3utilization"]
+    col8 = db["api_kiosktop3utilization"]
+    myquery_aicode = {'date':date}
+    myquery_aicode1 = {'icao_code':airport_code}
+    mongodocs_boarding_top3 = list(col1.find(myquery_aicode))
+    mongodocs_trolley_top3 = list(col2.find(myquery_aicode))
+    mongodocs_wifi_top3 = list(col3.find(myquery_aicode))
+    mongodocs_parking_top3= list(col5.find(myquery_aicode))
+    mongodocs_conveyor_top3= list(col6.find(myquery_aicode))
+    mongodocs_sanitizer_top3= list(col7.find(myquery_aicode))
+    mongodocs_kiosk_top3= list(col8.find(myquery_aicode))
     series_obj = pd.Series({"a key":"a value"})
     series_obj = pd.Series( {"one":"index"} )
     series_obj.index = [ "one" ]
     df_boarding_top3 = pd.DataFrame(columns=[])
     df_trolley_top3 = pd.DataFrame(columns=[])
     df_wifi_top3 = pd.DataFrame(columns=[])
-    df_feedback_top3 = pd.DataFrame(columns=[])
     df_parking_top3 = pd.DataFrame(columns=[])
     df_conveyor_top3 = pd.DataFrame(columns=[])
     df_sanitizer_top3 = pd.DataFrame(columns=[])
@@ -70,16 +68,6 @@ def top3(date,airport_code):
         series_obj = pd.Series( doc, name=doc_id )
         # append the MongoDB Series obj to the DataFrame obj
         df_wifi_top3= df_wifi_top3.append( series_obj )
-    # iterate over the list of MongoDB dict documents
-    for num, doc in enumerate( mongodocs_feedback_top3 ):
-        # convert ObjectId() to str
-        doc["_id"] = str(doc["_id"])
-        # get document _id from dict
-        doc_id = doc["_id"]
-        # create a Series obj from the MongoDB dict
-        series_obj = pd.Series( doc, name=doc_id )
-        # append the MongoDB Series obj to the DataFrame obj
-        df_feedback_top3 = df_feedback_top3.append( series_obj )
     # iterate over the list of MongoDB dict documents
     for num, doc in enumerate( mongodocs_parking_top3 ):
         # convert ObjectId() to str
@@ -120,59 +108,79 @@ def top3(date,airport_code):
         series_obj = pd.Series( doc, name=doc_id )
         # append the MongoDB Series obj to the DataFrame obj
         df_kiosk_top3 = df_kiosk_top3.append( series_obj )
-    del df_boarding_top3['_id'],df_trolley_top3['_id'],df_wifi_top3['_id'],df_feedback_top3['_id'],df_parking_top3['_id'],df_conveyor_top3['_id'],df_sanitizer_top3['_id'],df_kiosk_top3['_id']
-    df_boarding_top3_date = df_boarding_top3[df_boarding_top3.date == date]
-    df_wifi_top3_date= df_wifi_top3[df_wifi_top3.date == date]
-    df_trolley_top3_date= df_trolley_top3[df_trolley_top3.date == date]
-    df_icao_code_top3 = df_feedback_top3[df_feedback_top3.icao_code == airport_code ]
-    df_parking_top3_date= df_parking_top3[df_parking_top3.date == date]
-    df_conveyor_top3_date= df_conveyor_top3[df_conveyor_top3.date == date]
-    df_sanitizer_top3_date= df_sanitizer_top3[df_sanitizer_top3.date == date]
-    df_kiosk_top3_date= df_kiosk_top3[df_kiosk_top3.date == date]
-    fig = make_subplots(rows=8, cols=1)
+    #groupby as date boarding date
+    df_icao_code = pd.DataFrame(df_boarding_top3.groupby(['icao_code'],as_index=False).agg({'pct_utilization':('sum')}))
+    df_large3_boarding = df_boarding_top3.nlargest(3, "pct_utilization") 
+    #groupby as date trolley
+    df_icao_code_trolley = pd.DataFrame(df_trolley_top3.groupby(['icao_code'],as_index=False).agg({'pct_utilization':('sum')}))
+    df_large3_trolley = df_trolley_top3.nlargest(4, "pct_utilization") 
+    #groupby as date parking
+    df_icao_code_parking = pd.DataFrame(df_parking_top3.groupby(['icao_code'],as_index=False).agg({'pct_utilization':('sum')}))
+    df_large3_parking = df_parking_top3.nlargest(3, "pct_utilization") 
+    #groupby as date wifi
+    df_icao_code_wifi = pd.DataFrame(df_wifi_top3.groupby(['icao_code'],as_index=False).agg({'avg_utilization_min':('sum')}))
+    df_large3_wifi = df_wifi_top3.nlargest(3, "avg_utilization_min") 
+    #groupby as date sanitizer
+    df_icao_code_sanitizer = pd.DataFrame(df_sanitizer_top3.groupby(['icao_code'],as_index=False).agg({'avg_dispenses':('sum')}))
+    df_large3_sanitizer = df_sanitizer_top3.nlargest(4, "avg_dispenses") 
+    #groupby as date kiosk
+    df_icao_code_kiosk = pd.DataFrame(df_kiosk_top3.groupby(['icao_code'],as_index=False).agg({'pct_utilization':('sum')}))
+    df_large3_kiosk = df_kiosk_top3.nlargest(3, "pct_utilization") 
+    #groupby as date CB
+    df_icao_code_CB = pd.DataFrame(df_conveyor_top3.groupby(['icao_code'],as_index=False).agg({'pct_utilization':('sum')}))
+    df_large3_CB = df_conveyor_top3.nlargest(3, "pct_utilization") 
+    fig = make_subplots(rows=7, cols=1)
     #boarding
     fig.add_trace(
-        go.Bar(x=df_boarding_top3_date.icao_code, y=df_boarding_top3_date.pct_utilization,hovertext=df_boarding_top3['rank'],name=" Average utilization of used seats<br>x-axis :icao_code<br>y-aixs : percentage utilization<br>_______________________________"),
+        go.Bar(x=df_large3_boarding.icao_code, y=df_large3_boarding.pct_utilization,hovertext=df_boarding_top3['rank'],name=" Average utilization of used seats"),
         row=1, col=1
     )
     #trolley
     fig.add_trace(
-        go.Bar(x=df_trolley_top3_date.icao_code, y=df_trolley_top3_date.pct_utilization,hovertext=df_trolley_top3['rank'],name=" Average utilization of Wifi<br>x-axis : service_id<br>y-aixs : Percentage utilization<br>_______________________________"),
+        go.Bar(x=df_large3_trolley.icao_code, y=df_large3_trolley.pct_utilization,hovertext=df_trolley_top3['rank'],name=" Average utilization of Trolley"),
         row=2, col=1
     )
     #wifi
     fig.add_trace(
-        go.Bar(x=df_wifi_top3_date.icao_code, y=df_wifi_top3_date.avg_utilization_min,hovertext=df_wifi_top3['rank'],name=" Average utilization of Wifi<br>x-axis :icao_code <br>y-aixs :  Average utilization_min<br>_______________________________"),
+        go.Bar(x=df_large3_wifi.icao_code, y=df_large3_wifi.avg_utilization_min,name=" Average utilization min of Wifi"),
         row=3, col=1
     )
-    #feedback
-    fig.add_trace(
-        go.Bar(x=df_feedback_top3.icao_code, y=df_feedback_top3.rating_for_service,hovertext=df_feedback_top3['rank'], name="feedback rating of services<br>x-axis : icao_code<br>y-aixs : rating for service<br>_______________________________"),
-        row=4, col=1
-    )
+
     #parking
     fig.add_trace(
-        go.Bar(x=df_parking_top3_date.icao_code, y=df_parking_top3_date.pct_utilization,hovertext=df_parking_top3['rank'],name=" Percenatge Utilization<br>x-axis : icao_code <br>y-aixs :  Percenatge utilization_min<br>_______________________________"),
-        row=5, col=1
+        go.Bar(x=df_large3_parking.icao_code, y=df_large3_parking.pct_utilization,hovertext=df_parking_top3['rank'],name=" Percenatge Utilization of parking"),
+        row=4, col=1
     )
     #cb
     fig.add_trace(
-        go.Bar(x=df_conveyor_top3_date.icao_code, y=df_conveyor_top3_date.pct_utilization,hovertext=df_conveyor_top3['rank'],name=" Percenatge Utilization<br>x-axis : icao_code <br>y-aixs :  Percenatge utilization_min<br>_______________________________"),
-        row=6, col=1
+        go.Bar(x=df_large3_CB.icao_code, y=df_large3_CB.pct_utilization,hovertext=df_conveyor_top3['rank'],name=" Percenatge Utilization of CB"),
+        row=5, col=1
     )
     #sanitizer
     fig.add_trace(
-        go.Bar(x=df_sanitizer_top3_date.icao_code, y=df_sanitizer_top3_date.avg_dispenses,hovertext=df_sanitizer_top3['rank'],name=" Average dispenses<br>x-axis : icao_code <br>y-aixs :  avg_dispenses<br>_______________________________"),
-        row=7, col=1
+        go.Bar(x=df_large3_sanitizer.icao_code, y=df_large3_sanitizer.avg_dispenses,hovertext=df_sanitizer_top3['rank'],name=" Average dispenses of Sanitizer"),
+        row=6, col=1
     )
     #kiosk
     fig.add_trace(
-        go.Bar(x=df_kiosk_top3_date.icao_code, y=df_kiosk_top3_date.pct_utilization,hovertext=df_kiosk_top3['rank'],name=" Percenatge Utilization<br>x-axis : icao_code <br>y-aixs :  Percenatge utilization_min<br>_______________________________"),
-        row=8, col=1
+        go.Bar(x=df_large3_kiosk.icao_code, y=df_large3_kiosk.pct_utilization,hovertext=df_kiosk_top3['rank'],name=" Percenatge Utilization of checkInKiosk"),
+        row=7, col=1
     )
-    plot_div1 = fig.update_layout(height=800, width=1270, title_text="Services of Airport")
+    fig.update_xaxes(title_text="icao_code", row=1, col=1)
+    fig.update_yaxes(title_text=" Utilization ", row=1, col=1)
+    fig.update_xaxes(title_text="icao_code", row=2, col=1)
+    fig.update_yaxes(title_text="Utilization ", row=2, col=1)
+    fig.update_xaxes(title_text="icao_code", row=3, col=1)
+    fig.update_yaxes(title_text="Avg Utilization", row=3, col=1)
+    fig.update_xaxes(title_text="icao_code", row=4, col=1)
+    fig.update_yaxes(title_text="Utilization", row=4, col=1)
+    fig.update_xaxes(title_text="icao_code", row=5, col=1)
+    fig.update_yaxes(title_text="Utilization", row=5, col=1)
+    fig.update_xaxes(title_text="icao_code", row=6, col=1)
+    fig.update_yaxes(title_text="Average dispenses", row=6, col=1)
+    fig.update_xaxes(title_text="icao_code", row=7, col=1)
+    fig.update_yaxes(title_text="Utilization", row=7, col=1)
+    plot_div1 = fig.update_layout(height=1200, width=1270, title_text="Services of Airport")
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div
-
-
 

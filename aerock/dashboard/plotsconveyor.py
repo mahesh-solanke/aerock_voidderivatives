@@ -6,7 +6,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 client = MongoClient('mongodb+srv://sih2020:sih2020@sih2020.l990z.mongodb.net/<dbname>?retryWrites=true&w=majority')
-db_name = 'temp'
+db_name = 'sihfinal'
 db = client[db_name]
 
 def conveyor_hour(date, airport_code):

@@ -22,7 +22,8 @@ urlpatterns = [
         path('changethreshold',views.changethreshold,name='changethreshold'),
         path('airportlist',views.airportlist,name='airportlist'),
 	path('unregisterairport',views.unregisterairport,name="unregisterairport"),
-        path('reregisterairport',views.reregisterairport,name="reregisterairport")
+        path('reregisterairport',views.reregisterairport,name="reregisterairport"),
+	path('alerts',views.alerts,name="alerts"),
 
    ]
 

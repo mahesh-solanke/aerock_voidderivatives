@@ -65,11 +65,11 @@ df_merge['notused']=df_merge['notused'].astype(int)
 #print(df_merge)
 
 #hourwise
-#df_merge = df_merge.rename(columns={"used": "count_of_visits", 'deviceid' : 'count_of_devices'})
+df_merge = df_merge.rename(columns={"used": "count_of_visits", 'deviceid' : 'count_of_devices'})
 df_kioskhour=pd.DataFrame(df_merge.groupby(['date','icao_code','hour'],as_index=False).agg({'count_of_visits':('sum'),'count_of_devices':pd.Series.nunique}))
 df_kioskhour['pct_utilization']= df_kioskhour['count_of_visits'] / df_kioskhour['count_of_devices'] /30 * 100
 df_kioskhour['date']=pd.to_datetime(df_kioskhour['date'])
-#print(df_kioskhour)
+
 
 df_kioskhour['date1'] = df_kioskhour['date'].astype(str)
 df_kioskhour['hour1'] = df_kioskhour['hour'].astype(str)

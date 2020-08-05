@@ -67,7 +67,7 @@ def aaidashboard(request):
             chart = plotsboarding.boarding_hour(date,air)
             return render(request,'boardingpartial.html',context={'plot_div': chart})
         elif fac == 'Conveyor Belt':
-            chart = plotsconveyor.conveyor_belt_hour(date, air)
+            chart = plotsconveyor.conveyor_hour(date, air)
             return render(request,'conveyorpartial.html',context={'plot_div': chart})
         elif fac == 'Parking':
             chart = plotsparking.parking_hour(date, air)
@@ -89,7 +89,9 @@ def aaidashboard(request):
         return render(request,'aaidashboard.html',context={'plot_div': landing ,'airports':airports,'facilities':facilities})
 
 
-
+#Alerts
+def alerts(request):
+    return render(request,'alert.html')
 
 
 #Logout
@@ -164,7 +166,7 @@ def airportdashboard(request):
             chart = plotsboarding.boarding_hour(date,code)
             return render(request,'boardingpartial.html',context={'plot_div': chart})
         elif fac == 'Conveyor Belt':
-            chart = plotsconveyor.conveyor_belt_hour(date, code)
+            chart = plotsconveyor.conveyor_hour(date, code)
             return render(request,'conveyorpartial.html',context={'plot_div': chart})
         elif fac == 'Parking':
             chart = plotsparking.parking_hour(date, code)
@@ -210,7 +212,7 @@ def staffdashboard(request):
             chart = plotsboarding.boarding_hour(date,code)
             return render(request,'boardingpartial.html',context={'plot_div': chart})
         elif fac == 'Conveyor Belt':
-            chart = plotsconveyor.conveyor_belt_hour(date,code)
+            chart = plotsconveyor.conveyor_hour(date,code)
             return render(request,'conveyorpartial.html',context={'plot_div': chart})
         elif fac == 'Parking':
             chart = plotsparking.parking_hour(date, code)

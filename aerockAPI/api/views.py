@@ -76,7 +76,7 @@ class ExceptionDetails(APIView):
     def get(self,request):
         event_time = request.GET.get('event_time')
         if event_time is None:    
-            time_threshold = datetime.now() - timedelta(minutes=5)
+            time_threshold = datetime.now() - timedelta(minutes=1)
             strdate = str(time_threshold.strftime('%Y,%m,%d, %H,%M,%S'))
             utc_time = time.strptime(strdate, '%Y,%m,%d, %H,%M,%S')
             epoch_time = timegm(utc_time)

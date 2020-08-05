@@ -21,27 +21,76 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
   <script>
-  $(document).ready(function(){
-   $.ajaxSetup({
-          beforeSend: function () {
-            console.log('beforeSend');
-            $("#loader").show();
-	    $("#cht-wrapper").hide();
-          },
-          success: function () {
-            console.log('on success')
-            $("#loader").hide();
-	    $("#cht-wrapper").show();
+   $(document).ready(function () {
+    
+      setInterval(getAlerts, 60000)
+
+
+      function getAlerts() {
+
+        $.getJSON("http://49.248.169.178:8500/ExceptionDetails", //?event_time=" + sinceTime,
+            function(response){
+            console.log(response)
+            $.each(response,function(i,val){
+              processAlert(val);
+            })
+
           }
+        )
+      }
+
+      function processAlert(alert) {
+          console.log(alert.event_time)
+          var date = new Date(alert.event_time*1000);
+          console.log(date)
+          if (alert.state="ORANGE") {
+            msg = "Device ID " + alert.areaid + '/' + alert.deviceid + " has crossed warning threshold" 
+            showwarning(msg); 
+          }
+          else {
+            msg = "Device ID " + alert.areaid + '/' + alert.deviceid + " has breached it's capacity" 
+            showerror(msg);
+          }
+      }
+    
+       $(".button1").on('click', function() {
+        showwarning();  
+        });  
+
+      $(".button2").on('click',  function() {
+        showerror();  
         });
 
+
+        function showerror(msg){
+          $.notify("ALERT! " + msg, {
+            clickToHide: true,
+            autoHide: false,
+            type:"error",
+            align:"center",
+           verticalAlign:"center",
+           globalPosition: 'top center',
+            
+          });       
+        }
+
+        function showwarning(msg){
+          $.notify("WARNING! " + msg, {
+            clickToHide: true,
+            autoHide: false,
+            className:"warn",
+            align:"center",
+            globalPosition: 'top center',
+          });       
+        }
+
     var facility='wifi';
-     $('#facility').on('input change', function () {
+     $("#facility").on("input change", function () {
      if ($(this).val() != '') {
-        $('#datepicker').prop('disabled', false);
+        $("#datepicker").prop("disabled", false);
       }
      else {
-        $('#datepicker').prop('disabled', true);
+        $("#datepicker").prop("disabled", true);
       }
     });
         
@@ -49,7 +98,7 @@
       selectedFacility = $(this).children("option:selected").val();
       facility = selectedFacility;
       console.log('facility', selectedFacility);
-      date = '2020-08-01';
+      date = "2020-08-01";
       loadChart(date, facility, null);
     });
        
@@ -59,10 +108,12 @@
       loadChart(date, facility, null);
     });
        
-   
+ 	var interval;  
     $("#time").change(function(){
       autoRefreshTime = $(this).children("option:selected").val();
-      setInterval(loadChart,autoRefreshTime,date, facility, null);
+	$("#autorefreshOff").show();
+       $("#text").show();
+	interval =setInterval(loadChart,autoRefreshTime,date, facility, null);
     });
 
     $("#manualRefresh").click( function(){
@@ -71,8 +122,8 @@
     });
    $("#autorefreshOff").click(function(){
       clearInterval(interval);
-       $('#time > option[value=off]').prop('selected','true');
-       $('#autorefreshOff').hide();
+       $("#time > option[value=off]").prop('selected','true');
+       $("#autorefreshOff").hide();
 	$("#text").hide();
     });
 
@@ -157,6 +208,11 @@
           </div>
         </div>
       </li>
+	<li class="nav-item">
+        <a class="nav-link " href="alerts">
+          <i class="fa fa-exclamation-triangle"></i>
+          <span>Alerts</span>
+        </a>
     </ul>
     <!-- End of Sidebar -->
     <!-- Content Wrapper -->
@@ -207,7 +263,7 @@
           <div class="d-sm-flex align-items-center justify-content-between mb-4" >
             <h1 class="h3 mb-0 text-gray-800"></h1>
 	       <button class="btn" id='manualRefresh'><b class="fa fa-refresh"></b></button>
-          <select id='time' name='time' style="margin-right: 900px">
+          <select id='time' name='time'>
             <option value="off" selected="selected">Off</option>
             <option value="5000" >5 s</option>
             <option value="10000" >10 s</option>
@@ -258,7 +314,10 @@
   <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
   <!-- Page level custom scripts -->
   <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
-  <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+  <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script> 
+  <script src="{% static 'js/notify.js' %}"></script>
+  <script src="{% static 'js/notify.min.js' %}"></script>	
+
 </body>
 </html>
 

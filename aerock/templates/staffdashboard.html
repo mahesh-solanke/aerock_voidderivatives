@@ -34,7 +34,7 @@
 	    $("#cht-wrapper").show();
           }
         });
-
+	var interval;
     var facility='wifi';
      $('#facility').on('input change', function () {
      if ($(this).val() != '') {
@@ -61,7 +61,9 @@
    
     $("#time").change(function(){
       autoRefreshTime = $(this).children("option:selected").val();
-      setInterval(loadChart,autoRefreshTime,date, facility, null);
+	$("#autorefreshOff").show();
+       $("#text").show();
+      interval =setInterval(loadChart,autoRefreshTime,date, facility, null);
     });
 
     $("#manualRefresh").click( function(){
@@ -69,8 +71,8 @@
 	});
     $("#autorefreshOff").click(function(){
       clearInterval(interval);
-       $('#time > option[value=off]').prop('selected','true');
-       $('#autorefreshOff').hide();
+       $("#time > option[value=off]").prop('selected','true');
+       $("#autorefreshOff").hide();
 	$("#text").hide();
     });
        
@@ -179,7 +181,7 @@
           <div class="d-sm-flex align-items-center justify-content-between mb-4" >
             <h1 class="h3 mb-0 text-gray-800"></h1>
 	   <button class="btn" id='manualRefresh'><b class="fa fa-refresh"></b></button>
-          <select id='time' name='time' style="margin-right: 1000px">
+          <select id='time' name='time'>
             <option value="off" selected="selected">Off</option>
             <option value="5000" >5 s</option>
             <option value="10000" >10 s</option>

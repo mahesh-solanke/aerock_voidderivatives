@@ -43,9 +43,9 @@ def parking_hour(date, airport_code):
         row=3, col=1
     )
     fig.update_xaxes(title_text="Hour", row=1, col=1)
-    fig.update_yaxes(title_text="count_of_visits", row=1, col=1)
+    fig.update_yaxes(title_text="% Utilzation", row=1, col=1)
     fig.update_xaxes(title_text="Hour", row=2, col=1)
-    fig.update_yaxes(title_text="% Utilization", row=2, col=1)
+    fig.update_yaxes(title_text="count of visits", row=2, col=1)
     fig.update_xaxes(title_text="Hour", row=3, col=1)
     fig.update_yaxes(title_text="count of occupancy", row=3, col=1)
     plot_div1 = fig.update_layout(height=600, width=1270, title_text= airport_code + " Parking Hour wise data")

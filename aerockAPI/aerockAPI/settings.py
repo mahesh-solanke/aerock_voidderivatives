@@ -26,7 +26,7 @@ SECRET_KEY = 'zwsu$w*lu4(bxw5y%or=h&$_%m%pquuc-q#vsjse(3e15_#f=f'
 DEBUG = True
 
 ALLOWED_HOSTS = ['49.248.169.178']
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,7 +89,7 @@ DATABASES = {
         'NAME': 'sihfinal',
         'CLIENT': {
             'host': "mongodb+srv://sih2020:sih2020@sih2020.l990z.mongodb.net/<dbname>?retryWrites=true&w=majority"
-        },   
+        },
     }
 }
 # Password validation

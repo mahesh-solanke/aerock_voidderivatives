@@ -17,67 +17,70 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script >
-  $(document).ready(function(){
-   $.ajaxSetup({
+ $(document).ready(function(){
+    var airport = 'VABH';
+    var facility = 'wifi';
+    $('#airport').on('input change', function () {
+      if ($(this).val() != '')
+       {
+          $('#facility').prop('disabled', false);
+       }
+      else
+       {
+          $('#facility').prop('disabled', true);
+       }
+    });
+
+    $("#airport").change(function () {
+      airport_code = $(this).children("option:selected").val();
+      airport = airport_code;
+      console.log('Airport', airport_code);
+      displayFacility(airport);
+    });
+ 
+    $('#facility').on('input change', function () {
+      if ($(this).val() != '')
+       {
+         $('#datepicker').prop('disabled', false);
+       }
+      else
+       {
+          $('#datepicker').prop('disabled', true);
+       }
+    });
+
+	 $.ajaxSetup({
           beforeSend: function () {
             console.log('beforeSend');
             $("#loader").show();
-	    $("#cht-wrapper").hide();
+            $("#cht-wrapper").hide();
           },
           success: function () {
             console.log('on success')
             $("#loader").hide();
-	    $("#cht-wrapper").show();
+            $("#cht-wrapper").show();
           }
         });
 
-   
-    var airport = 'VABH';
-    var facility = 'wifi';
-    $('#airport').on('input change', function () {
-            if ($(this).val() != '') {
-                $('#facility').prop('disabled', false);
-            }
-            else {
-                $('#facility').prop('disabled', true);
-            }
-        });
-
-    $("#airport").change(function () {
-            airport_code = $(this).children("option:selected").val();
-            airport = airport_code;
-            console.log('Airport', airport_code);
-            displayFacility(airport);
-          });
-
- 
-     $('#facility').on('input change', function () {
-         if ($(this).val() != '') {
-            $('#datepicker').prop('disabled', false);
-          }
-         else {
-            $('#datepicker').prop('disabled', true);
-          }
+    $("#facility").change(function () {
+      selectedFacility = $(this).children("option:selected").val();
+      facility = selectedFacility;
+	 date = '2020-08-01';
+      console.log('facility', selectedFacility);
+	loadChart(date,facility,airport);
     });
 
-      $("#facility").change(function () {
-        selectedFacility = $(this).children("option:selected").val();
-        facility = selectedFacility;
-        console.log('facility', selectedFacility);
-	date = '2020-08-01';
+    $("#datepicker").change(function () {
+        var date= $(this).val();
+        console.log('date', date);
         loadChart(date, facility, airport);
-      });
+    });
 
 
-        $("#datepicker").change(function () {
-            var date= $(this).val();
-            console.log('date', date);
-            loadChart(date, facility, airport);
-        });
-	
-	$("#time").change(function(){
+var interval;
+    $("#time").change(function(){
       autoRefreshTime = $(this).children("option:selected").val();
-      interval = setInterval(loadChart,autoRefreshTime,date, facility, null);
+      interval = setInterval(loadChart,autoRefreshTime,date, facility, airport);
     });
 
     $("#manualRefresh").click( function(){
@@ -87,33 +90,30 @@
 
     $("#autorefreshOff").click(function(){
       clearInterval(interval);
-       $('#time > option[value=off]').prop('selected','true');
-       $('#autorefreshOff').hide();
-	$("#text").hide();
+       $("#time > option[value=off]").prop('selected','true');
+       $("#autorefreshOff").hide();
+       $("#text").hide();
     });
 
     function displayFacility(airport){
-     var data= {
-        'csrfmiddlewaretoken': csrftoken,
-        'airport': airport
-      };
-
+      var data= {
+                  'csrfmiddlewaretoken': csrftoken,
+                  'airport': airport
+                };
       $( "#facility" ).load("/aaidashboard", data);
     }
 
-
     function loadChart(date, facility, airport) {
-          var data= {
-            'csrfmiddlewaretoken': csrftoken,
-            'date':date,
-            'airport': airport,
-            'facility': facility
-          };
-
-          $( "#cht-wrapper" ).load("/aaidashboard", data);
-         }
-
+      var data= {
+                  'csrfmiddlewaretoken': csrftoken,
+                  'date':date,
+                  'airport': airport,
+                  'facility': facility
+                };
+      $( "#cht-wrapper" ).load("/aaidashboard", data);
+    }
   });
+</script>
 </script>
 </head>
 <body id="page-top">
