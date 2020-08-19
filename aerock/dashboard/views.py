@@ -180,7 +180,7 @@ def airportdashboard(request):
         elif fac == 'Self Check-In Kiosk':
             chart = plotskiosk.kiosk_hour(date ,code)
             return render(request,'kioskpartial.html',context={'plot_div': chart})
-        return render(request,'partial.html',context={'plot_div': chart})
+        return render(request,'partial.html')
     else:
         date =request.GET.get('date',None)
         current_user = request.user
@@ -226,7 +226,7 @@ def staffdashboard(request):
         elif fac == 'Self Check-In Kiosk':
             chart = plotskiosk.kiosk_hour(date,code)
             return render(request,'kioskpartial.html',context={'plot_div': chart})
-        return render(request,'partial.html',context={'plot_div': chart})
+        return render(request,'partial.html')
     else:
         date =request.GET.get('date',None)
         current_user = request.user
@@ -416,7 +416,7 @@ def addairport(request):
 
 
 #Forgot Password
-def forgotpass(request):
+def forgotpassword(request):
     if request.method == 'POST':
         code = request.POST['icao']
         mail = request.POST['email']
@@ -476,18 +476,31 @@ def changethreshold(request):
         air = request.POST['airportId']
         fac = request.POST['facility']
         s_type = request.POST['stype']
-        t_type = request.POST['ttype']
-        lvalue  = request.POST['lowvalue']
+        s_threshold= request.POST['sthreshold']
         hvalue  = request.POST['highvalue']
+        lvalue  = request.POST['lowvalue']
         cap = request.POST['capacity']
         a_id = airport.objects.only('id').get(airport_name = air).id
         f_id = facility.objects.only('id').get(name = fac).id
         airfac = airportfacility.objects.filter(air_id=a_id).get(fac_id = f_id)
-        t = threshold.objects.create(sensor_type = s_type,threshold_value_low = lvalue,threshold_value_high = hvalue,threshold_type = t_type,capacity = cap,airfac_id = airfac.id)
-        t.save();
-        return redirect('/airportdashboard')
+        if threshold.objects.filter(airfac_id = airfac.id).exists():
+            thre = threshold.objects.all()
+            for t in thre:
+                if t.airfac_id == airfac.id:
+                    t.sensor_threshold = s_threshold
+                    t.threshold_value_high = hvalue
+                    t.threshold_value_low = lvalue
+                    t.capacity = cap
+                    t.save();
+                    return redirect('/airportdashboard')
+        else:
+            t = threshold.objects.create(sensor_type = s_type,threshold_value_high = hvalue,threshold_value_low = lvalue,sensor_threshold = s_threshold,capacity = cap,airfac_id = airfac.id)
+            t.save();
+            return redirect('/airportdashboard')
     else:
         return render(request,'threshold.html',{'airports':airports,'facilities':facilities,'userair':userair,'airfac':airfac})
+
+
 
     
 

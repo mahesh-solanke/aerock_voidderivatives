@@ -37,13 +37,14 @@ class exception_detailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = exception_details
         fields = ["_id",
-        'event_time',
+        "event_time",
         "facility",
         "deviceid",
         "areaid",
         "icao_code",
         "actual_value",
-        "threshold_value",
+        "high_threshold",
+        "low_threshold",
         "state"]
 
 class boardingdaySerializer(serializers.ModelSerializer):

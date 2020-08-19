@@ -8,10 +8,9 @@ class exception_details(models.Model):
 	areaid = models.CharField(max_length = 255)
 	icao_code = models.CharField(max_length = 255)
 	actual_value = models.IntegerField()
-	threshold_value = models.IntegerField()
+	high_threshold = models.IntegerField()
+	low_threshold = models.IntegerField()
 	state = models.CharField(max_length = 255)
-
-
 class boardingday(models.Model):
 	_id = models.CharField(max_length = 255)
 	date = models.DateField()

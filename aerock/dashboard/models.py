@@ -45,10 +45,10 @@ class airportfacility(models.Model):
 #Threshold Table
 class threshold(models.Model):
     sensor_type = models.TextField(max_length=20)
-    threshold_type = models.TextField(max_length = 30)
+    sensor_threshold = models.IntegerField()
     threshold_value_high = models.IntegerField()
     threshold_value_low = models.IntegerField()
-    capacity = models.IntegerField()
+    capacity = models.IntegerField(null ='True')
     airfac = models.ForeignKey(airportfacility,on_delete=models.CASCADE)
 
 

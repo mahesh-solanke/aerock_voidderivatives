@@ -28,7 +28,7 @@
 
       function getAlerts() {
 
-        $.getJSON("http://49.248.169.178:8500/ExceptionDetails", //?event_time=" + sinceTime,
+        $.getJSON("http://49.248.169.178:8500/ExceptionDetails?event_time=1597412219", //?event_time=" + sinceTime,
             function(response){
             console.log(response)
             $.each(response,function(i,val){
@@ -42,26 +42,17 @@
       function processAlert(alert) {
           console.log(alert.event_time)
           var date = new Date(alert.event_time*1000);
-          console.log(date)
-          if (alert.state="ORANGE") {
+          console.log(alert.state)
+          if (alert.state == "ORANGE") {
             msg = "Device ID " + alert.areaid + '/' + alert.deviceid + " has crossed warning threshold" 
             showwarning(msg); 
           }
-          else {
-            msg = "Device ID " + alert.areaid + '/' + alert.deviceid + " has breached it's capacity" 
+ 	else {
+            msg = "Device ID " + alert.areaid + '/' + alert.deviceid +'/' + alert.facility + " has breached it's capacity" 
             showerror(msg);
           }
       }
     
-       $(".button1").on('click', function() {
-        showwarning();  
-        });  
-
-      $(".button2").on('click',  function() {
-        showerror();  
-        });
-
-
         function showerror(msg){
           $.notify("ALERT! " + msg, {
             clickToHide: true,
