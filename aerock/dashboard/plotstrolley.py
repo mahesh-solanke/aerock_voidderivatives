@@ -8,8 +8,9 @@ from pymongo import MongoClient
 
 #logger = logging.getLogger(__name__)
 client = MongoClient('mongodb+srv://sih2020:sih2020@sih2020.l990z.mongodb.net/<dbname>?retryWrites=true&w=majority')
-db_name = 'sihfinal'
+db_name = 'aerockdb'
 db = client[db_name]
+
 def trolley_hour(date, airport_code):
     col = db["api_trolleycalchour"]
     myquery_aicode = {'icao_code':airport_code,'date':date}
@@ -47,7 +48,7 @@ def trolley_hour(date, airport_code):
     fig.update_yaxes(title_text="Count Used", row=2, col=1)
     fig.update_xaxes(title_text="Hour", row=3, col=1)
     fig.update_yaxes(title_text="countunused", row=3, col=1)
-    plot_div1 = fig.update_layout(height=600, width=1270, title_text=airport_code +" Data")
+    plot_div1 = fig.update_layout(height=600, width=1270, title_text=airport_code +" Data", template="plotly_dark")#plotly_white
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div
 

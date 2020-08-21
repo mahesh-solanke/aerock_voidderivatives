@@ -39,7 +39,7 @@ def boarding_hour(date, airport_code):
         row=2, col=1
     )'''
     fig.add_trace(
-        go.Pie(labels=df_boarding_hour.hour,values=df_boarding_hour.count_used, title="Total Count_used", sort=True),
+        go.Pie(labels=df_boarding_hour.hour,values=df_boarding_hour.count_used, title="Total Count_used", sort=False),
         row=1, col=1
     )
     fig.add_trace(
