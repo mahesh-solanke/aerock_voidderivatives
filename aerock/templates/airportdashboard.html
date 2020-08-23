@@ -43,6 +43,18 @@
           console.log(alert.event_time)
           var date = new Date(alert.event_time*1000);
           console.log(alert.state)
+          if(alert.facility == "Trolley" || alert.facility == "Boarding Gate" ){
+
+        if (alert.state == "ORANGE") {
+            msg =  alert.facility + " has crossed warning threshold"
+            showwarning(msg);
+          }
+        else {
+            msg = alert.facility + " has breached it's capacity"
+            showerror(msg);
+          } 
+	 }
+	 else{
           if (alert.state == "ORANGE") {
             msg = "Device ID " + alert.areaid + '/' + alert.deviceid + '/' + alert.facility + " has crossed warning threshold" 
             showwarning(msg); 
@@ -51,6 +63,7 @@
             msg = "Device ID " + alert.areaid + '/' + alert.deviceid +'/' + alert.facility + " has breached it's capacity" 
             showerror(msg);
           }
+ 	}
       }
     
         function showerror(msg){

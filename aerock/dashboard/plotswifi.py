@@ -8,8 +8,9 @@ from pymongo import MongoClient
 
 #logger = logging.getLogger(__name__)
 client = MongoClient('mongodb+srv://sih2020:sih2020@sih2020.l990z.mongodb.net/<dbname>?retryWrites=true&w=majority')
-db_name = 'sihfinal'
+db_name = 'aerockdb'
 db = client[db_name]
+
 def wifi_hour(date, airport_code):
     col = db["api_wifihour"]
     myquery_aicode = {'icao_code':airport_code,'date':date}
@@ -34,7 +35,7 @@ def wifi_hour(date, airport_code):
         row=1, col=1
     )
     fig.add_trace(
-        go.Bar(x=df_wifi_hour.hour, y=df_wifi_hour.total_download,name=" Total Downloads(GB)"),
+        go.Scatter(x=df_wifi_hour.hour, y=df_wifi_hour.total_download,name=" Total Downloads(GB)"),
         row=2, col=1
     )
     fig.add_trace(
@@ -42,7 +43,7 @@ def wifi_hour(date, airport_code):
         row=3, col=1
     )
     fig.add_trace(
-        go.Bar(x=df_wifi_hour.hour, y=df_wifi_hour.total_used_minutes,name=" Total used minutes"),
+        go.Scatter(x=df_wifi_hour.hour, y=df_wifi_hour.total_used_minutes,name=" Total used minuts"),
         row=4, col=1
     )
     fig.add_trace(
@@ -59,6 +60,8 @@ def wifi_hour(date, airport_code):
     fig.update_yaxes(title_text="Total used minutes", row=4, col=1)
     fig.update_xaxes(title_text="Hour", row=5, col=1)
     fig.update_yaxes(title_text="total unique users", row=5, col=1)
-    plot_div1 = fig.update_layout(height=900, width=1270, title_text=airport_code+" Data")
+    plot_div1 = fig.update_layout(height=900, width=1270, title_text=airport_code+" Data", template="plotly_dark")
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div
+
+

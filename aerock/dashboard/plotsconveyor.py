@@ -6,7 +6,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 client = MongoClient('mongodb+srv://sih2020:sih2020@sih2020.l990z.mongodb.net/<dbname>?retryWrites=true&w=majority')
-db_name = 'sihfinal'
+db_name = 'aerockdb'
 db = client[db_name]
 
 def conveyor_hour(date, airport_code):
@@ -40,10 +40,11 @@ def conveyor_hour(date, airport_code):
         series_obj = pd.Series( doc, name=doc_id )
         # append the MongoDB Series obj to the DataFrame obj
         df_conveyor_avghour = df_conveyor_avghour.append( series_obj )
+    df_conveyor_utilhour=pd.DataFrame(df_conveyor_utilhour.groupby(['date','hour'],as_index=False).agg({'pct_opr_allconveyorbelts':(sum)}))
     fig = make_subplots(rows=2, cols=1)
     #hour wise percentage opr time
     fig.add_trace(
-        go.Bar(x=df_conveyor_utilhour.hour, y=df_conveyor_utilhour.pct_opr_allconveyorbelts,hovertext=df_conveyor_utilhour['cb_id'],name=" % Operational time of each CB"),
+        go.Bar(x=df_conveyor_utilhour.hour, y=df_conveyor_utilhour.pct_opr_allconveyorbelts,name=" % Operational time of each CB"),
         row=1, col=1
     )
     #avg hour
@@ -52,10 +53,10 @@ def conveyor_hour(date, airport_code):
         row=2, col=1
     )
     fig.update_xaxes(title_text="Hour", row=1, col=1)
-    fig.update_yaxes(title_text="Oprational of all CB", row=1, col=1)
+    fig.update_yaxes(title_text=" oprational of all CB", row=1, col=1)
     fig.update_xaxes(title_text="Hour", row=2, col=1)
-    fig.update_yaxes(title_text="Average oprerational min of all CB ", row=2, col=1)
-    plot_div1 = fig.update_layout(height=600, width=1270, title_text=airport_code+" Data")
+    fig.update_yaxes(title_text="Average oprerational of all CB ", row=2, col=1)
+    plot_div1 = fig.update_layout(height=600, width=1270, title_text=airport_code+" Data", template="plotly_dark")#plotly_white
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div
 
