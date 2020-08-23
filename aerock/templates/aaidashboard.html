@@ -65,9 +65,7 @@
     $("#facility").change(function () {
       selectedFacility = $(this).children("option:selected").val();
       facility = selectedFacility;
-	 date = '2020-08-01';
       console.log('facility', selectedFacility);
-	loadChart(date,facility,airport);
     });
 
     $("#datepicker").change(function () {

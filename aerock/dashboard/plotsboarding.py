@@ -52,7 +52,7 @@ def boarding_hour(date, airport_code):
     fig.update_xaxes(title_text="Hour", row=2, col=1)
     fig.update_yaxes(title_text="% Utilization", row=2, col=1)
     '''
-    plot_div1 = fig.update_layout(height=600, width=900, title_text=airport_code+" Data")
+    plot_div1 = fig.update_layout(height=600, width=1270, title_text=airport_code+" Data", template="plotly_dark")
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div
 

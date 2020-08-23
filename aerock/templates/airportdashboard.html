@@ -28,7 +28,7 @@
 
       function getAlerts() {
 
-        $.getJSON("http://49.248.169.178:8500/ExceptionDetails?event_time=1597412219", //?event_time=" + sinceTime,
+        $.getJSON("http://49.248.169.178:8500/ExceptionDetails", //?event_time=" + sinceTime,
             function(response){
             console.log(response)
             $.each(response,function(i,val){
@@ -44,7 +44,7 @@
           var date = new Date(alert.event_time*1000);
           console.log(alert.state)
           if (alert.state == "ORANGE") {
-            msg = "Device ID " + alert.areaid + '/' + alert.deviceid + " has crossed warning threshold" 
+            msg = "Device ID " + alert.areaid + '/' + alert.deviceid + '/' + alert.facility + " has crossed warning threshold" 
             showwarning(msg); 
           }
  	else {
@@ -89,8 +89,6 @@
       selectedFacility = $(this).children("option:selected").val();
       facility = selectedFacility;
       console.log('facility', selectedFacility);
-      date = "2020-08-01";
-      loadChart(date, facility, null);
     });
        
     $("#datepicker").change(function () {

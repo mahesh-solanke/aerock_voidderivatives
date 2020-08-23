@@ -42,7 +42,7 @@ def sanitizer_hour(date, airport_code):
     fig.update_yaxes(title_text="avg dispenses", row=1, col=1)
     fig.update_xaxes(title_text="Hour", row=2, col=1)
     fig.update_yaxes(title_text="count_dispenses", row=2, col=1)
-    plot_div1 = fig.update_layout(barmode='group', height=600, width=1270, title_text= airport_code + " Sanitizer data")
+    plot_div1 = fig.update_layout(barmode='group', height=600, width=1270, title_text= airport_code + " Sanitizer data", template="plotly_dark")
     plot_div= plot(plot_div1, output_type='div', include_plotlyjs=False)
     return plot_div
 
